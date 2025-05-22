@@ -284,6 +284,302 @@ class MKSCommands:
             return False, message
         return False, message
     
+    def set_enable_pin(self, mode):
+        """Set the active of the En pin - Command 0x85
+        mode: 0=active low, 1=active high, 2=always enabled
+        """
+        if mode not in range(3):
+            return False, "Invalid enable pin mode value"
+        
+        success, message = self.can.send_command(0x85, [mode])
+        if success:
+            success, message, data = self.can.receive_response()
+            if success and data:
+                code = data[1]
+                if code == 0x85:
+                    status = data[2]
+                    return True, {"status": status, "message": "Set successfully" if status == 1 else "Set failed"}
+            return False, message
+        return False, message
+    
+    def set_direction(self, direction):
+        """Set the direction of motor rotation - Command 0x86
+        direction: 0=CW, 1=CCW
+        """
+        if direction not in [0, 1]:
+            return False, "Invalid direction value"
+        
+        success, message = self.can.send_command(0x86, [direction])
+        if success:
+            success, message, data = self.can.receive_response()
+            if success and data:
+                code = data[1]
+                if code == 0x86:
+                    status = data[2]
+                    return True, {"status": status, "message": "Set successfully" if status == 1 else "Set failed"}
+            return False, message
+        return False, message
+    
+    def set_auto_screen_off(self, enable):
+        """Set auto turn off the screen function - Command 0x87
+        enable: 0=disabled, 1=enabled
+        """
+        if enable not in [0, 1]:
+            return False, "Invalid enable value"
+        
+        success, message = self.can.send_command(0x87, [enable])
+        if success:
+            success, message, data = self.can.receive_response()
+            if success and data:
+                code = data[1]
+                if code == 0x87:
+                    status = data[2]
+                    return True, {"status": status, "message": "Set successfully" if status == 1 else "Set failed"}
+            return False, message
+        return False, message
+    
+    def set_protection(self, enable):
+        """Set the motor shaft locked-rotor protection function - Command 0x88
+        enable: 0=disabled, 1=enabled
+        """
+        if enable not in [0, 1]:
+            return False, "Invalid enable value"
+        
+        success, message = self.can.send_command(0x88, [enable])
+        if success:
+            success, message, data = self.can.receive_response()
+            if success and data:
+                code = data[1]
+                if code == 0x88:
+                    status = data[2]
+                    return True, {"status": status, "message": "Set successfully" if status == 1 else "Set failed"}
+            return False, message
+        return False, message
+    
+    def set_subdivision_interpolation(self, enable):
+        """Set the subdivision interpolation function - Command 0x89
+        enable: 0=disabled, 1=enabled
+        """
+        if enable not in [0, 1]:
+            return False, "Invalid enable value"
+        
+        success, message = self.can.send_command(0x89, [enable])
+        if success:
+            success, message, data = self.can.receive_response()
+            if success and data:
+                code = data[1]
+                if code == 0x89:
+                    status = data[2]
+                    return True, {"status": status, "message": "Set successfully" if status == 1 else "Set failed"}
+            return False, message
+        return False, message
+    
+    def set_can_bitrate(self, bitrate):
+        """Set the CAN bitRate - Command 0x8A
+        bitrate: 0=125K, 1=250K, 2=500K, 3=1M
+        """
+        if bitrate not in range(4):
+            return False, "Invalid bitrate value"
+        
+        success, message = self.can.send_command(0x8A, [bitrate])
+        if success:
+            success, message, data = self.can.receive_response()
+            if success and data:
+                code = data[1]
+                if code == 0x8A:
+                    status = data[2]
+                    return True, {"status": status, "message": "Set successfully" if status == 1 else "Set failed"}
+            return False, message
+        return False, message
+    
+    def set_can_id(self, can_id):
+        """Set the CAN ID - Command 0x8B
+        can_id: 0-2047 (0 is broadcast address)
+        """
+        if can_id < 0 or can_id > 2047:
+            return False, "Invalid CAN ID value"
+        
+        # Convert CAN ID to bytes (uint16)
+        can_id_bytes = can_id.to_bytes(2, byteorder='little')
+        
+        success, message = self.can.send_command(0x8B, list(can_id_bytes))
+        if success:
+            success, message, data = self.can.receive_response()
+            if success and data:
+                code = data[1]
+                if code == 0x8B:
+                    status = data[2]
+                    return True, {"status": status, "message": "Set successfully" if status == 1 else "Set failed"}
+            return False, message
+        return False, message
+    
+    def set_slave_respond_active(self, respond, active):
+        """Set the slave respond and active - Command 0x8C
+        respond: 0=disabled, 1=enabled
+        active: 0=disabled, 1=enabled
+        """
+        if respond not in [0, 1] or active not in [0, 1]:
+            return False, "Invalid respond or active value"
+        
+        success, message = self.can.send_command(0x8C, [respond, active])
+        if success:
+            success, message, data = self.can.receive_response()
+            if success and data:
+                code = data[1]
+                if code == 0x8C:
+                    status = data[2]
+                    return True, {"status": status, "message": "Set successfully" if status == 1 else "Set failed"}
+            return False, message
+        return False, message
+    
+    def set_key_lock(self, lock):
+        """Set the key lock or unlock - Command 0x8F
+        lock: 0=unlock, 1=lock
+        """
+        if lock not in [0, 1]:
+            return False, "Invalid lock value"
+        
+        success, message = self.can.send_command(0x8F, [lock])
+        if success:
+            success, message, data = self.can.receive_response()
+            if success and data:
+                code = data[1]
+                if code == 0x8F:
+                    status = data[2]
+                    return True, {"status": status, "message": "Set successfully" if status == 1 else "Set failed"}
+            return False, message
+        return False, message
+    
+    def set_group_id(self, group_id):
+        """Set the group ID - Command 0x8D
+        group_id: 1-2047
+        """
+        if group_id < 1 or group_id > 2047:
+            return False, "Invalid group ID value"
+        
+        # Convert group ID to bytes (uint16)
+        group_id_bytes = group_id.to_bytes(2, byteorder='little')
+        
+        success, message = self.can.send_command(0x8D, list(group_id_bytes))
+        if success:
+            success, message, data = self.can.receive_response()
+            if success and data:
+                code = data[1]
+                if code == 0x8D:
+                    status = data[2]
+                    return True, {"status": status, "message": "Set successfully" if status == 1 else "Set failed"}
+            return False, message
+        return False, message
+    
+    def set_home_parameters(self, home_trig, home_dir, home_speed, end_limit):
+        """Set the parameter of home - Command 0x90
+        home_trig: 0=Low, 1=High
+        home_dir: 0=CW, 1=CCW
+        home_speed: 0-3000 RPM
+        end_limit: 0=disabled, 1=enabled
+        """
+        if home_trig not in [0, 1] or home_dir not in [0, 1] or end_limit not in [0, 1]:
+            return False, "Invalid parameter value"
+        if home_speed < 0 or home_speed > 3000:
+            return False, "Invalid home speed value"
+        
+        # Convert home speed to bytes (uint16)
+        home_speed_bytes = home_speed.to_bytes(2, byteorder='little')
+        
+        success, message = self.can.send_command(0x90, [home_trig, home_dir, home_speed_bytes[0], home_speed_bytes[1], end_limit])
+        if success:
+            success, message, data = self.can.receive_response()
+            if success and data:
+                code = data[1]
+                if code == 0x90:
+                    status = data[2]
+                    return True, {"status": status, "message": "Set successfully" if status == 1 else "Set failed"}
+            return False, message
+        return False, message
+    
+    def go_home(self):
+        """Go home - Command 0x91"""
+        success, message = self.can.send_command(0x91)
+        if success:
+            success, message, data = self.can.receive_response()
+            if success and data:
+                code = data[1]
+                if code == 0x91:
+                    status = data[2]
+                    status_messages = {
+                        0: "Go home failed",
+                        1: "Go home started",
+                        2: "Go home successful"
+                    }
+                    return True, {"status": status, "message": status_messages.get(status, "Unknown status")}
+            return False, message
+        return False, message
+    
+    def set_current_position_to_zero(self):
+        """Set Current Axis to zero - Command 0x92"""
+        success, message = self.can.send_command(0x92)
+        if success:
+            success, message, data = self.can.receive_response()
+            if success and data:
+                code = data[1]
+                if code == 0x92:
+                    status = data[2]
+                    return True, {"status": status, "message": "Set successfully" if status == 1 else "Set failed"}
+            return False, message
+        return False, message
+    
+    def set_zero_mode_parameters(self, mode, enable, speed, direction):
+        """Set the parameter of 0_Mode - Command 0x9A
+        mode: 0=Disable, 1=DirMode, 2=NearMode
+        enable: 0=clean zero, 1=set zero
+        speed: 0-4 (0=slowest, 4=fastest)
+        direction: 0=CW, 1=CCW
+        """
+        if mode not in range(3) or enable not in [0, 1] or speed not in range(5) or direction not in [0, 1]:
+            return False, "Invalid parameter value"
+        
+        success, message = self.can.send_command(0x9A, [mode, enable, speed, direction])
+        if success:
+            success, message, data = self.can.receive_response()
+            if success and data:
+                code = data[1]
+                if code == 0x9A:
+                    status = data[2]
+                    return True, {"status": status, "message": "Set successfully" if status == 1 else "Set failed"}
+            return False, message
+        return False, message
+    
+    def set_limit_port_remap(self, enable):
+        """Set limit port remap - Command 0x9E
+        enable: 0=disable remap limit port, 1=enable remap limit port
+        """
+        if enable not in [0, 1]:
+            return False, "Invalid enable value"
+        
+        success, message = self.can.send_command(0x9E, [enable])
+        if success:
+            success, message, data = self.can.receive_response()
+            if success and data:
+                code = data[1]
+                if code == 0x9E:
+                    status = data[2]
+                    return True, {"status": status, "message": "Set successfully" if status == 1 else "Set failed"}
+            return False, message
+        return False, message
+    
+    def restore_default_parameters(self):
+        """Restore the default parameter - Command 0x3F"""
+        success, message = self.can.send_command(0x3F)
+        if success:
+            success, message, data = self.can.receive_response()
+            if success and data:
+                code = data[1]
+                if code == 0x3F:
+                    status = data[2]
+                    return True, {"status": status, "message": "Restore successful" if status == 1 else "Restore failed"}
+            return False, message
+        return False, message
+    
     # Motor control commands
     
     def run_motor_speed_mode(self, direction, speed, acceleration):
@@ -575,6 +871,7 @@ class MKSConfiguratorApp(QMainWindow):
         # Set Group ID button
         self.set_group_id_button = QPushButton("Set Group ID")
         self.set_group_id_button.setEnabled(False)
+        self.set_group_id_button.clicked.connect(self.set_group_id)
         motor_id_layout.addWidget(self.set_group_id_button, 2, 0, 1, 2)
         
         layout.addWidget(motor_id_group)
@@ -594,6 +891,7 @@ class MKSConfiguratorApp(QMainWindow):
         # Set CAN Rate button
         self.set_can_rate_button = QPushButton("Set CAN Rate")
         self.set_can_rate_button.setEnabled(False)
+        self.set_can_rate_button.clicked.connect(self.set_can_rate)
         can_rate_layout.addWidget(self.set_can_rate_button, 1, 0, 1, 2)
         
         layout.addWidget(can_rate_group)
@@ -695,14 +993,17 @@ class MKSConfiguratorApp(QMainWindow):
         # Set Motion Settings buttons
         self.set_subdivision_button = QPushButton("Set Subdivision")
         self.set_subdivision_button.setEnabled(False)
+        self.set_subdivision_button.clicked.connect(self.set_subdivision)
         motion_layout.addWidget(self.set_subdivision_button, 3, 0)
         
         self.set_direction_button = QPushButton("Set Direction")
         self.set_direction_button.setEnabled(False)
+        self.set_direction_button.clicked.connect(self.set_direction)
         motion_layout.addWidget(self.set_direction_button, 3, 1)
         
         self.set_enable_pin_button = QPushButton("Set Enable Pin")
         self.set_enable_pin_button.setEnabled(False)
+        self.set_enable_pin_button.clicked.connect(self.set_enable_pin)
         motion_layout.addWidget(self.set_enable_pin_button, 4, 0, 1, 2)
         
         layout.addWidget(motion_group)
@@ -721,9 +1022,34 @@ class MKSConfiguratorApp(QMainWindow):
         # Set Protection button
         self.set_protection_button = QPushButton("Set Protection")
         self.set_protection_button.setEnabled(False)
+        self.set_protection_button.clicked.connect(self.set_protection)
         protection_layout.addWidget(self.set_protection_button, 1, 0, 1, 2)
         
         layout.addWidget(protection_group)
+        
+        # Limit Port Remap group
+        limit_remap_group = QGroupBox("Limit Port Remap")
+        limit_remap_layout = QGridLayout(limit_remap_group)
+        
+        # Limit Port Remap
+        limit_remap_label = QLabel("Limit Port Remap:")
+        self.limit_remap_combo = QComboBox()
+        self.limit_remap_combo.addItems(["Disabled", "Enabled"])
+        limit_remap_layout.addWidget(limit_remap_label, 0, 0)
+        limit_remap_layout.addWidget(self.limit_remap_combo, 0, 1)
+        
+        # Set Limit Port Remap button
+        self.set_limit_remap_button = QPushButton("Set Limit Port Remap")
+        self.set_limit_remap_button.setEnabled(False)
+        self.set_limit_remap_button.clicked.connect(self.set_limit_port_remap)
+        limit_remap_layout.addWidget(self.set_limit_remap_button, 1, 0, 1, 2)
+        
+        # Note about Limit Port Remap
+        limit_remap_note = QLabel("Note: Only for serial control mode.\nLeft limit -> En port\nRight limit -> Dir port")
+        limit_remap_note.setStyleSheet("font-style: italic;")
+        limit_remap_layout.addWidget(limit_remap_note, 2, 0, 1, 2)
+        
+        layout.addWidget(limit_remap_group)
         
         # Add stretch to push everything to the top
         layout.addStretch()
@@ -822,10 +1148,12 @@ class MKSConfiguratorApp(QMainWindow):
         # Run/Stop buttons
         self.run_position_button = QPushButton("Run")
         self.run_position_button.setEnabled(False)
+        self.run_position_button.clicked.connect(self.run_motor_position)
         position_layout.addWidget(self.run_position_button, 5, 0)
         
         self.stop_position_button = QPushButton("Stop")
         self.stop_position_button.setEnabled(False)
+        self.stop_position_button.clicked.connect(self.stop_motor_position)
         position_layout.addWidget(self.stop_position_button, 5, 1)
         
         layout.addWidget(position_control_group)
@@ -866,16 +1194,19 @@ class MKSConfiguratorApp(QMainWindow):
         # Set Home Parameters button
         self.set_home_params_button = QPushButton("Set Home Parameters")
         self.set_home_params_button.setEnabled(False)
+        self.set_home_params_button.clicked.connect(self.set_home_parameters)
         homing_layout.addWidget(self.set_home_params_button, 4, 0)
         
         # Go Home button
         self.go_home_button = QPushButton("Go Home")
         self.go_home_button.setEnabled(False)
+        self.go_home_button.clicked.connect(self.go_home)
         homing_layout.addWidget(self.go_home_button, 4, 1)
         
         # Set Zero button
         self.set_zero_button = QPushButton("Set Current Position to Zero")
         self.set_zero_button.setEnabled(False)
+        self.set_zero_button.clicked.connect(self.set_current_position_to_zero)
         homing_layout.addWidget(self.set_zero_button, 5, 0, 1, 2)
         
         layout.addWidget(homing_group)
@@ -1144,6 +1475,119 @@ class MKSConfiguratorApp(QMainWindow):
         else:
             QMessageBox.warning(self, "Command Failed", f"Failed to set holding current: {result}")
     
+    def set_subdivision(self):
+        """Set subdivision"""
+        subdivision_text = self.subdivision_combo.currentText()
+        subdivision_value = int(subdivision_text)
+        
+        success, result = self.mks_commands.set_subdivision(subdivision_value)
+        
+        if success:
+            self.statusBar().showMessage(f"Subdivision set to {subdivision_text}")
+        else:
+            QMessageBox.warning(self, "Command Failed", f"Failed to set subdivision: {result}")
+    
+    def set_direction(self):
+        """Set direction"""
+        direction_index = self.direction_combo.currentIndex()
+        
+        success, result = self.mks_commands.set_direction(direction_index)
+        
+        if success:
+            self.statusBar().showMessage(f"Direction set to {self.direction_combo.currentText()}")
+        else:
+            QMessageBox.warning(self, "Command Failed", f"Failed to set direction: {result}")
+    
+    def set_enable_pin(self):
+        """Set enable pin mode"""
+        enable_pin_index = self.enable_pin_combo.currentIndex()
+        
+        success, result = self.mks_commands.set_enable_pin(enable_pin_index)
+        
+        if success:
+            self.statusBar().showMessage(f"Enable pin set to {self.enable_pin_combo.currentText()}")
+        else:
+            QMessageBox.warning(self, "Command Failed", f"Failed to set enable pin: {result}")
+    
+    def set_protection(self):
+        """Set protection"""
+        protection_index = self.protection_combo.currentIndex()
+        
+        success, result = self.mks_commands.set_protection(protection_index)
+        
+        if success:
+            self.statusBar().showMessage(f"Protection {self.protection_combo.currentText()}")
+        else:
+            QMessageBox.warning(self, "Command Failed", f"Failed to set protection: {result}")
+    
+    def set_limit_port_remap(self):
+        """Set limit port remap"""
+        remap_index = self.limit_remap_combo.currentIndex()
+        
+        success, result = self.mks_commands.set_limit_port_remap(remap_index)
+        
+        if success:
+            self.statusBar().showMessage(f"Limit port remap {self.limit_remap_combo.currentText()}")
+        else:
+            QMessageBox.warning(self, "Command Failed", f"Failed to set limit port remap: {result}")
+    
+    def set_group_id(self):
+        """Set group ID"""
+        group_id = self.group_id_spin.value()
+        
+        success, result = self.mks_commands.set_group_id(group_id)
+        
+        if success:
+            self.statusBar().showMessage(f"Group ID set to {group_id}")
+        else:
+            QMessageBox.warning(self, "Command Failed", f"Failed to set group ID: {result}")
+    
+    def set_can_rate(self):
+        """Set CAN rate"""
+        can_rate_text = self.can_rate_combo.currentText()
+        can_rate_index = {"125K": 0, "250K": 1, "500K": 2, "1M": 3}[can_rate_text]
+        
+        success, result = self.mks_commands.set_can_bitrate(can_rate_index)
+        
+        if success:
+            self.statusBar().showMessage(f"CAN rate set to {can_rate_text}")
+        else:
+            QMessageBox.warning(self, "Command Failed", f"Failed to set CAN rate: {result}")
+    
+    def set_home_parameters(self):
+        """Set home parameters"""
+        home_trig = self.home_trigger_combo.currentIndex()
+        home_dir = self.home_direction_combo.currentIndex()
+        home_speed = self.home_speed_spin.value()
+        end_limit = self.end_limit_combo.currentIndex()
+        
+        success, result = self.mks_commands.set_home_parameters(home_trig, home_dir, home_speed, end_limit)
+        
+        if success:
+            self.statusBar().showMessage("Home parameters set successfully")
+        else:
+            QMessageBox.warning(self, "Command Failed", f"Failed to set home parameters: {result}")
+    
+    def go_home(self):
+        """Go home"""
+        success, result = self.mks_commands.go_home()
+        
+        if success:
+            status = result.get("status", 0)
+            message = result.get("message", "Unknown status")
+            self.statusBar().showMessage(message)
+        else:
+            QMessageBox.warning(self, "Command Failed", f"Failed to go home: {result}")
+    
+    def set_current_position_to_zero(self):
+        """Set current position to zero"""
+        success, result = self.mks_commands.set_current_position_to_zero()
+        
+        if success:
+            self.statusBar().showMessage("Current position set to zero")
+        else:
+            QMessageBox.warning(self, "Command Failed", f"Failed to set position to zero: {result}")
+    
     # Control methods
     
     def run_motor_speed(self):
@@ -1178,6 +1622,214 @@ class MKSConfiguratorApp(QMainWindow):
             self.statusBar().showMessage("Emergency stop activated")
         else:
             QMessageBox.warning(self, "Command Failed", f"Failed to emergency stop: {result}")
+    
+    def run_motor_position(self):
+        """Run the motor in position mode"""
+        mode_index = self.position_mode_combo.currentIndex()
+        direction = self.position_direction_combo.currentIndex()
+        position = self.position_spin.value()
+        speed = self.position_speed_spin.value()
+        acceleration = self.position_acceleration_spin.value()
+        
+        # Prepare command based on position mode
+        if mode_index == 0:  # Relative by Pulses
+            # Convert position to bytes (uint24)
+            position_bytes = position.to_bytes(3, byteorder='little', signed=False)
+            
+            # Prepare the command data according to the manual
+            # byte2: The highest bit indicates the direction, the lower 4 bits and byte3 together indicate the speed
+            # byte3: The lower 4 bits of byte2 and byte3 together indicate speed
+            byte2 = (direction << 7) | ((speed >> 8) & 0x0F)
+            byte3 = speed & 0xFF
+            
+            # Send command
+            success, message = self.can_interface.send_command(0xFD, [byte2, byte3, acceleration, 
+                                                                     position_bytes[0], position_bytes[1], position_bytes[2]])
+            
+            if success:
+                success, message, data = self.can_interface.receive_response()
+                if success and data:
+                    code = data[1]
+                    if code == 0xFD:
+                        status = data[2]
+                        status_messages = {
+                            0: "Run failed",
+                            1: "Run starting",
+                            2: "Run completed",
+                            3: "End limit stopped"
+                        }
+                        self.statusBar().showMessage(status_messages.get(status, "Unknown status"))
+                        return
+            
+            QMessageBox.warning(self, "Command Failed", f"Failed to run motor: {message}")
+            
+        elif mode_index == 1:  # Absolute by Pulses
+            # Convert position to bytes (int24)
+            position_bytes = position.to_bytes(3, byteorder='little', signed=True)
+            
+            # Send command
+            success, message = self.can_interface.send_command(0xFE, [speed & 0xFF, (speed >> 8) & 0xFF, 
+                                                                     acceleration, 
+                                                                     position_bytes[0], position_bytes[1], position_bytes[2]])
+            
+            if success:
+                success, message, data = self.can_interface.receive_response()
+                if success and data:
+                    code = data[1]
+                    if code == 0xFE:
+                        status = data[2]
+                        status_messages = {
+                            0: "Run failed",
+                            1: "Run starting",
+                            2: "Run completed",
+                            3: "End limit stopped"
+                        }
+                        self.statusBar().showMessage(status_messages.get(status, "Unknown status"))
+                        return
+            
+            QMessageBox.warning(self, "Command Failed", f"Failed to run motor: {message}")
+            
+        elif mode_index == 2:  # Relative by Axis
+            # Convert position to bytes (int24)
+            position_bytes = position.to_bytes(3, byteorder='little', signed=True)
+            
+            # Send command
+            success, message = self.can_interface.send_command(0xF4, [speed & 0xFF, (speed >> 8) & 0xFF, 
+                                                                     acceleration, 
+                                                                     position_bytes[0], position_bytes[1], position_bytes[2]])
+            
+            if success:
+                success, message, data = self.can_interface.receive_response()
+                if success and data:
+                    code = data[1]
+                    if code == 0xF4:
+                        status = data[2]
+                        status_messages = {
+                            0: "Run failed",
+                            1: "Run starting",
+                            2: "Run completed",
+                            3: "End limit stopped"
+                        }
+                        self.statusBar().showMessage(status_messages.get(status, "Unknown status"))
+                        return
+            
+            QMessageBox.warning(self, "Command Failed", f"Failed to run motor: {message}")
+            
+        elif mode_index == 3:  # Absolute by Axis
+            # Convert position to bytes (int24)
+            position_bytes = position.to_bytes(3, byteorder='little', signed=True)
+            
+            # Send command
+            success, message = self.can_interface.send_command(0xF5, [speed & 0xFF, (speed >> 8) & 0xFF, 
+                                                                     acceleration, 
+                                                                     position_bytes[0], position_bytes[1], position_bytes[2]])
+            
+            if success:
+                success, message, data = self.can_interface.receive_response()
+                if success and data:
+                    code = data[1]
+                    if code == 0xF5:
+                        status = data[2]
+                        status_messages = {
+                            0: "Run failed",
+                            1: "Run starting",
+                            2: "Run completed",
+                            3: "End limit stopped"
+                        }
+                        self.statusBar().showMessage(status_messages.get(status, "Unknown status"))
+                        return
+            
+            QMessageBox.warning(self, "Command Failed", f"Failed to run motor: {message}")
+    
+    def stop_motor_position(self):
+        """Stop the motor in position mode"""
+        mode_index = self.position_mode_combo.currentIndex()
+        acceleration = self.position_acceleration_spin.value()
+        
+        # Prepare command based on position mode
+        if mode_index == 0:  # Relative by Pulses
+            # Send stop command
+            success, message = self.can_interface.send_command(0xFD, [0, 0, acceleration, 0, 0, 0])
+            
+            if success:
+                success, message, data = self.can_interface.receive_response()
+                if success and data:
+                    code = data[1]
+                    if code == 0xFD:
+                        status = data[2]
+                        status_messages = {
+                            0: "Stop failed",
+                            1: "Stopping",
+                            2: "Stop completed",
+                            3: "End limit stopped"
+                        }
+                        self.statusBar().showMessage(status_messages.get(status, "Unknown status"))
+                        return
+            
+            QMessageBox.warning(self, "Command Failed", f"Failed to stop motor: {message}")
+            
+        elif mode_index == 1:  # Absolute by Pulses
+            # Send stop command
+            success, message = self.can_interface.send_command(0xFE, [0, 0, acceleration, 0, 0, 0])
+            
+            if success:
+                success, message, data = self.can_interface.receive_response()
+                if success and data:
+                    code = data[1]
+                    if code == 0xFE:
+                        status = data[2]
+                        status_messages = {
+                            0: "Stop failed",
+                            1: "Stopping",
+                            2: "Stop completed",
+                            3: "End limit stopped"
+                        }
+                        self.statusBar().showMessage(status_messages.get(status, "Unknown status"))
+                        return
+            
+            QMessageBox.warning(self, "Command Failed", f"Failed to stop motor: {message}")
+            
+        elif mode_index == 2:  # Relative by Axis
+            # Send stop command
+            success, message = self.can_interface.send_command(0xF4, [0, 0, acceleration, 0, 0, 0])
+            
+            if success:
+                success, message, data = self.can_interface.receive_response()
+                if success and data:
+                    code = data[1]
+                    if code == 0xF4:
+                        status = data[2]
+                        status_messages = {
+                            0: "Stop failed",
+                            1: "Stopping",
+                            2: "Stop completed",
+                            3: "End limit stopped"
+                        }
+                        self.statusBar().showMessage(status_messages.get(status, "Unknown status"))
+                        return
+            
+            QMessageBox.warning(self, "Command Failed", f"Failed to stop motor: {message}")
+            
+        elif mode_index == 3:  # Absolute by Axis
+            # Send stop command
+            success, message = self.can_interface.send_command(0xF5, [0, 0, acceleration, 0, 0, 0])
+            
+            if success:
+                success, message, data = self.can_interface.receive_response()
+                if success and data:
+                    code = data[1]
+                    if code == 0xF5:
+                        status = data[2]
+                        status_messages = {
+                            0: "Stop failed",
+                            1: "Stopping",
+                            2: "Stop completed",
+                            3: "End limit stopped"
+                        }
+                        self.statusBar().showMessage(status_messages.get(status, "Unknown status"))
+                        return
+            
+            QMessageBox.warning(self, "Command Failed", f"Failed to stop motor: {message}")
     
     # Data update methods
     
